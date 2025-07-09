@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech for Girls - Registration</title>
+    <!-- Tailwind CSS CDN for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for Bubble Animation and specific styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Vibrant gradient background */
+            background: linear-gradient(135deg, #a770ef 0%, #cf8bf3 50%, #fbc2eb 100%);
+            overflow: hidden; /* Hide overflow for bubbles */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            touch-action: manipulation; /* Allow clicks/touches to register on body */
+        }
+
+        .bubble-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* Send bubbles to background */
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0; /* Start invisible */
+            pointer-events: none; /* Bubbles should not interfere with clicks/touches */
+        }
+
+        /* Styles for the static background bubbles */
+        .background-bubble {
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .light-bubble {
+            background: rgba(255, 255, 255, 0.15); /* Very light, subtle white for contrast */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Subtle glow for bubbles */
+        }
+
+        .dark-pink-bubble {
+            /* Increased opacity for better visibility */
+            background: rgba(255, 105, 180, 0.35); /* Vibrant dark pink with more transparency */
+            box-shadow: 0 0 18px rgba(255, 105, 180, 0.5); /* Matching, slightly stronger glow */
+        }
+
+        /* Define background bubble sizes and positions - now with even more bubbles! */
+        /* Grouping similar sizes/delays for easier management and more bubbles */
+        .background-bubble:nth-child(1) { width: 60px; height: 60px; left: 10%; bottom: -60px; animation-duration: 12s; animation-delay: 0s; opacity: 0.7; }
+        .background-bubble:nth-child(2) { width: 80px; height: 80px; left: 25%; bottom: -80px; animation-duration: 15s; animation-delay: 2s; opacity: 0.6; }
+        .background-bubble:nth-child(3) { width: 40px; height: 40px; left: 40%; bottom: -40px; animation-duration: 10s; animation-delay: 4s; opacity: 0.8; }
+        .background-bubble:nth-child(4) { width: 100px; height: 100px; left: 60%; bottom: -100px; animation-duration: 18s; animation-delay: 6s; opacity: 0.5; }
+        .background-bubble:nth-child(5) { width: 70px; height: 70px; left: 80%; bottom: -70px; animation-duration: 13s; animation-delay: 8s; opacity: 0.7; }
+
+        /* More dark pink bubbles */
+        .background-bubble:nth-child(6) { width: 55px; height: 55px; left: 5%; bottom: -55px; animation-duration: 11s; animation-delay: 1s; opacity: 0.6; }
+        .background-bubble:nth-child(7) { width: 90px; height: 90px; left: 70%; bottom: -90px; animation-duration: 16s; animation-delay: 3s; opacity: 0.5; }
+        .background-bubble:nth-child(8) { width: 65px; height: 65px; left: 30%; bottom: -65px; animation-duration: 14s; animation-delay: 5s; opacity: 0.7; }
+        .background-bubble:nth-child(9) { width: 45px; height: 45px; left: 90%; bottom: -45px; animation-duration: 9s; animation-delay: 7s; opacity: 0.8; }
+        .background-bubble:nth-child(10) { width: 75px; height: 75px; left: 50%; bottom: -75px; animation-duration: 17s; animation-delay: 9s; opacity: 0.6; }
+
+        /* Even more dark pink bubbles for density */
+        .background-bubble:nth-child(11) { width: 50px; height: 50px; left: 18%; bottom: -50px; animation-duration: 10s; animation-delay: 0.5s; opacity: 0.75; }
+        .background-bubble:nth-child(12) { width: 95px; height: 95px; left: 42%; bottom: -95px; animation-duration: 19s; animation-delay: 2.5s; opacity: 0.45; }
+        .background-bubble:nth-child(13) { width: 35px; height: 35px; left: 7%; bottom: -35px; animation-duration: 8s; animation-delay: 4.5s; opacity: 0.9; }
+        .background-bubble:nth-child(14) { width: 110px; height: 110px; left: 85%; bottom: -110px; animation-duration: 22s; animation-delay: 6.5s; opacity: 0.4; }
+        .background-bubble:nth-child(15) { width: 68px; height: 68px; left: 22%; bottom: -68px; animation-duration: 15s; animation-delay: 8.5s; opacity: 0.65; }
+
+        .background-bubble:nth-child(16) { width: 72px; height: 72px; left: 58%; bottom: -72px; animation-duration: 12.5s; animation-delay: 1.5s; opacity: 0.7; }
+        .background-bubble:nth-child(17) { width: 42px; height: 42px; left: 3%; bottom: -42px; animation-duration: 10.5s; animation-delay: 3.5s; opacity: 0.85; }
+        .background-bubble:nth-child(18) { width: 88px; height: 88px; left: 78%; bottom: -88px; animation-duration: 17.5s; animation-delay: 5.5s; opacity: 0.55; }
+        .background-bubble:nth-child(19) { width: 62px; height: 62px; left: 12%; bottom: -62px; animation-duration: 13.5s; animation-delay: 7.5s; opacity: 0.7; }
+        .background-bubble:nth-child(20) { width: 78px; height: 78px; left: 95%; bottom: -78px; animation-duration: 15.5s; animation-delay: 9.5s; opacity: 0.6; }
+
+        .background-bubble:nth-child(21) { width: 53px; height: 53px; left: 35%; bottom: -53px; animation-duration: 11.8s; animation-delay: 0.8s; opacity: 0.68; }
+        .background-bubble:nth-child(22) { width: 83px; height: 83px; left: 5%; bottom: -83px; animation-duration: 14.8s; animation-delay: 2.8s; opacity: 0.58; }
+        .background-bubble:nth-child(23) { width: 38px; height: 38px; left: 65%; bottom: -38px; animation-duration: 9.8s; animation-delay: 4.8s; opacity: 0.88; }
+        .background-bubble:nth-child(24) { width: 105px; height: 105px; left: 48%; bottom: -105px; animation-duration: 20s; animation-delay: 6.8s; opacity: 0.48; }
+        .background-bubble:nth-child(25) { width: 70px; height: 70px; left: 88%; bottom: -70px; animation-duration: 16s; animation-delay: 8.8s; opacity: 0.72; }
+
+        .background-bubble:nth-child(26) { width: 47px; height: 47px; left: 28%; bottom: -47px; animation-duration: 9.2s; animation-delay: 1.2s; opacity: 0.8; }
+        .background-bubble:nth-child(27) { width: 92px; height: 92px; left: 72%; bottom: -92px; animation-duration: 18.2s; animation-delay: 3.2s; opacity: 0.52; }
+        .background-bubble:nth-child(28) { width: 58px; height: 58px; left: 15%; bottom: -58px; animation-duration: 12.2s; animation-delay: 5.2s; opacity: 0.68; }
+        .background-bubble:nth-child(29) { width: 80px; height: 80px; left: 55%; bottom: -80px; animation-duration: 14.2s; animation-delay: 7.2s; opacity: 0.62; }
+        .background-bubble:nth-child(30) { width: 67px; height: 67px; left: 40%; bottom: -67px; animation-duration: 11.2s; animation-delay: 9.2s; opacity: 0.75; }
+
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(-120vh); opacity: 0; }
+        }
+
+        /* Styles for dynamically created touch bubbles */
+        .touch-bubble {
+            background: rgba(0, 255, 255, 0.6); /* Cyan with 60% opacity */
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8); /* Stronger glow */
+            /* Animation applied via JS, using CSS variables for dynamic movement */
+        }
+
+        @keyframes burst-float {
+            0% {
+                transform: translate(var(--start-x, 0), var(--start-y, 0)) scale(0);
+                opacity: 0;
+            }
+            20% {
+                transform: translate(var(--start-x, 0), var(--start-y, 0)) scale(1.2); /* Slightly larger initial scale */
+                opacity: 1; /* Fully opaque at peak */
+            }
+            100% {
+                transform: translate(var(--end-x, 0), var(--end-y, 0)) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Form specific styles */
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1; /* Ensure form is above bubbles */
+            border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle white border */
+            backdrop-filter: blur(10px); /* Increased blur for frosted glass effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px; /* Rounded inputs */
+            transition: all 0.3s ease-in-out;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input background */
+        }
+
+        .input-field:focus {
+            border-color: #8a2be2; /* Purple focus */
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2); /* Soft purple glow */
+        }
+
+        .input-field::placeholder {
+            color: #b0b0b0;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E); /* WhatsApp green gradient */
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-submit {
+            background: linear-gradient(45deg, #8a2be2, #a052f2); /* Purple gradient */
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .file-upload-box {
+            border: 2px dashed #d0d0d0;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+        }
+
+        .file-upload-box:hover {
+            border-color: #8a2be2;
+            background-color: rgba(240, 240, 240, 0.8);
+        }
+
+        .file-upload-box input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            font-size: 1rem;
+            color: #666;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: #8a2be2;
+            margin-bottom: 5px;
+        }
+
+        .whatsapp-counter {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #555;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .success-message {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #25D366;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e6ffe6;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.2);
+            display: none; /* Hidden by default */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 25px;
+            }
+            .btn {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+            .whatsapp-counter {
+                font-size: 1rem;
+            }
+            .success-message {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble-container">
+        <!-- Bubbles for background animation - now with more and dark pink ones -->
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+        <div class="bubble background-bubble light-bubble"></div>
+        <div class="bubble background-bubble dark-pink-bubble"></div>
+    </div>
+
+    <div class="form-container">
+        <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Tech for Girls Registration</h2>
+
+        <form id="registrationForm">
+            <!-- Basic Details Section -->
+            <div class="mb-6">
+                <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
+                <input type="text" id="name" name="name" class="input-field" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="mb-6">
+                <label for="phone" class="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="input-field" placeholder="e.g., 9876543210" pattern="[0-9]{10}" title="Please enter a 10-digit phone number" required>
+            </div>
+
+            <div class="mb-6">
+                <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email ID</label>
+                <input type="email" id="email" name="email" class="input-field" placeholder="e.g., your.email@example.com" required>
+            </div>
+
+            <div class="mb-6">
+                <label for="college" class="block text-gray-700 text-sm font-medium mb-2">College/Department</label>
+                <input type="text" id="college" name="college" class="input-field" placeholder="e.g., University of Technology / Computer Science" required>
+            </div>
+
+            <!-- WhatsApp Sharing Button with Counter -->
+            <div class="mb-6">
+                <button type="button" id="whatsappShareBtn" class="btn btn-whatsapp">
+                    Share on WhatsApp
+                </button>
+                <p id="whatsappCounter" class="whatsapp-counter">Click count: 0/5</p>
+            </div>
+
+            <!-- Screenshot Upload -->
+            <div class="mb-6">
+                <label for="screenshotUpload" class="block text-gray-700 text-sm font-medium mb-2">Upload Screenshot (Resume, Photo, etc.)</label>
+                <div class="file-upload-box" id="fileUploadBox">
+                    <input type="file" id="screenshotUpload" name="screenshot" accept="image/*" required>
+                    <span class="file-upload-icon">⬆️</span>
+                    <p class="file-upload-label">Drag & Drop your file here or Click to Browse</p>
+                    <p id="fileName" class="text-xs text-gray-500 mt-2"></p>
+                </div>
+            </div>
+
+            <!-- Submit Registration Button -->
+            <div>
+                <button type="submit" id="submitBtn" class="btn btn-submit">
+                    Submit Registration
+                </button>
+            </div>
+        </form>
+
+        <div id="successMessage" class="success-message">
+            🎉 Your submission has been recorded. Thanks for being part of Tech for Girls!
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for interactivity
+        const whatsappShareBtn = document.getElementById('whatsappShareBtn');
+        const whatsappCounter = document.getElementById('whatsappCounter');
+        const submitBtn = document.getElementById('submitBtn');
+        const registrationForm = document.getElementById('registrationForm');
+        const successMessage = document.getElementById('successMessage');
+        const screenshotUpload = document.getElementById('screenshotUpload');
+        const fileNameDisplay = document.getElementById('fileName');
+        const fileUploadBox = document.getElementById('fileUploadBox');
+        const bodyElement = document.body; // Reference to the body for touch events
+
+        let shareCount = 0;
+        const maxShareCount = 5;
+        const localStorageFlag = 'techForGirlsSubmitted';
+
+        // Check local storage on page load for single submission
+        window.onload = function() {
+            if (localStorage.getItem(localStorageFlag) === 'true') {
+                disableForm();
+                successMessage.style.display = 'block';
+            }
+        };
+
+        whatsappShareBtn.addEventListener('click', () => {
+            if (shareCount < maxShareCount) {
+                shareCount++;
+                whatsappCounter.textContent = `Click count: ${shareCount}/${maxShareCount}`;
+                // Open WhatsApp link
+                const message = encodeURIComponent("Hey Buddy, Join Tech For Girls Community");
+                window.open(`https://wa.me/?text=${message}`, '_blank');
+
+                if (shareCount === maxShareCount) {
+                    whatsappCounter.textContent = "Sharing complete. Please continue.";
+                    whatsappCounter.style.color = '#25D366'; // Green when complete
+                }
+            } else {
+                // Optionally provide feedback if already maxed out
+                console.log("Sharing already complete.");
+            }
+        });
+
+        // Handle file input change
+        screenshotUpload.addEventListener('change', (event) => {
+            if (event.target.files.length > 0) {
+                fileNameDisplay.textContent = `Selected: ${event.target.files[0].name}`;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
+        // Handle drag and drop for file upload
+        fileUploadBox.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileUploadBox.style.borderColor = '#8a2be2';
+            fileUploadBox.style.backgroundColor = 'rgba(240, 240, 240, 0.8)';
+        });
+
+        fileUploadBox.addEventListener('dragleave', (event) => {
+            event.preventDefault();
+            fileUploadBox.style.borderColor = '#d0d0d0';
+            fileUploadBox.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        });
+
+        fileUploadBox.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileUploadBox.style.borderColor = '#d0d0d0';
+            fileUploadBox.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                screenshotUpload.files = files; // Assign dropped files to input
+                fileNameDisplay.textContent = `Selected: ${files[0].name}`;
+            }
+        });
+
+        // Trigger file input click when fileUploadBox is clicked
+        fileUploadBox.addEventListener('click', () => {
+            screenshotUpload.click();
+        });
+
+
+        registrationForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            if (shareCount < maxShareCount) {
+                // Use a custom message box instead of alert
+                showCustomMessageBox("Please complete the WhatsApp sharing (5 clicks) before submitting.");
+                return;
+            }
+
+            // In a real application, you would collect form data here
+            // and send it to your Google Apps Script Web App.
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                college: document.getElementById('college').value,
+                // For file upload, you'd typically send the file to a storage service
+                // and then send the resulting URL to Google Sheets.
+                // For this example, we'll just acknowledge the file selection.
+                screenshotFileName: screenshotUpload.files.length > 0 ? screenshotUpload.files[0].name : 'No file uploaded'
+            };
+
+            console.log("Form Data to be submitted:", formData);
+            // Simulate submission success
+            // In a real scenario, this would be inside a fetch().then() block
+            // after successful data transmission to Google Apps Script.
+
+            // Simulate a short delay for "submission"
+            setTimeout(() => {
+                disableForm();
+                successMessage.style.display = 'block';
+                localStorage.setItem(localStorageFlag, 'true'); // Set flag in local storage
+            }, 1000);
+        });
+
+        function disableForm() {
+            const formElements = registrationForm.elements;
+            for (let i = 0; i < formElements.length; i++) {
+                formElements[i].disabled = true;
+            }
+            submitBtn.disabled = true;
+            whatsappShareBtn.disabled = true;
+            fileUploadBox.style.pointerEvents = 'none'; // Disable drag/drop area
+            fileUploadBox.style.opacity = '0.7';
+        }
+
+        // Custom Message Box (instead of alert)
+        function showCustomMessageBox(message) {
+            const messageBox = document.createElement('div');
+            messageBox.style.position = 'fixed';
+            messageBox.style.top = '50%';
+            messageBox.style.left = '50%';
+            messageBox.style.transform = 'translate(-50%, -50%)';
+            messageBox.style.backgroundColor = 'white';
+            messageBox.style.padding = '25px 35px';
+            messageBox.style.borderRadius = '15px';
+            messageBox.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)';
+            messageBox.style.zIndex = '1000';
+            messageBox.style.textAlign = 'center';
+            messageBox.style.maxWidth = '90%';
+            messageBox.style.fontSize = '1.1rem';
+            messageBox.style.color = '#333';
+            messageBox.style.border = '1px solid #ddd';
+            messageBox.style.animation = 'fadeIn 0.3s ease-out';
+
+            messageBox.innerHTML = `
+                <p class="mb-5">${message}</p>
+                <button id="closeMessageBox" style="background-color: #8a2be2; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s ease;">OK</button>
+            `;
+
+            document.body.appendChild(messageBox);
+
+            document.getElementById('closeMessageBox').addEventListener('click', () => {
+                messageBox.style.animation = 'fadeOut 0.3s ease-in forwards';
+                setTimeout(() => messageBox.remove(), 300);
+            });
+
+            // CSS for fade in/out animation
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translate(-50%, -60%); }
+                    to { opacity: 1; transform: translate(-50%, -50%); }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translate(-50%, -50%); }
+                    to { opacity: 0; transform: translate(-50%, -60%); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // --- Interactive Bubble Logic ---
+        bodyElement.addEventListener('touchstart', (event) => {
+            // Prevent default touch behavior (like scrolling) if you want only bubble interaction
+            // event.preventDefault();
+
+            const touch = event.touches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            // Create multiple bubbles for a burst effect
+            const numberOfBubbles = Math.floor(Math.random() * 4) + 5; // 5 to 8 bubbles
+            for (let i = 0; i < numberOfBubbles; i++) {
+                const newBubble = document.createElement('div');
+                newBubble.classList.add('bubble', 'touch-bubble');
+                bodyElement.appendChild(newBubble);
+
+                // Set initial position near the touch point
+                newBubble.style.left = `${x}px`;
+                newBubble.style.top = `${y}px`;
+
+                // Set random size
+                const size = Math.random() * 40 + 20; // Size between 20px and 60px (increased)
+                newBubble.style.width = `${size}px`;
+                newBubble.style.height = `${size}px`;
+
+                // Set random start and end offsets for movement
+                const startOffsetX = (Math.random() - 0.5) * 50; // -25 to 25
+                const startOffsetY = (Math.random() - 0.5) * 50; // -25 to 25
+                const endOffsetX = (Math.random() - 0.5) * 250; // -125 to 125 (increased spread)
+                const endOffsetY = (Math.random() - 0.5) * 250; // -125 to 125
+
+                newBubble.style.setProperty('--start-x', `${startOffsetX}px`);
+                newBubble.style.setProperty('--start-y', `${startOffsetY}px`);
+                newBubble.style.setProperty('--end-x', `${endOffsetX}px`);
+                newBubble.style.setProperty('--end-y', `${endOffsetY}px`);
+
+                // Apply dynamic animation with random duration
+                const animationDuration = Math.random() * 1.5 + 0.8; // 0.8 to 2.3 seconds
+                newBubble.style.animation = `burst-float ${animationDuration}s ease-out forwards`;
+
+                // Remove the bubble after its animation completes
+                newBubble.addEventListener('animationend', () => {
+                    newBubble.remove();
+                });
+            }
+        });
+
+        // Also add click listener for desktop users to see the effect
+        bodyElement.addEventListener('click', (event) => {
+            // Only trigger if it's not a touch event (to avoid double triggering on touch devices)
+            if (event.pointerType === 'mouse' || event.pointerType === '') {
+                const x = event.clientX;
+                const y = event.clientY;
+
+                const numberOfBubbles = Math.floor(Math.random() * 4) + 5; // 5 to 8 bubbles
+                for (let i = 0; i < numberOfBubbles; i++) {
+                    const newBubble = document.createElement('div');
+                    newBubble.classList.add('bubble', 'touch-bubble');
+                    bodyElement.appendChild(newBubble);
+
+                    newBubble.style.left = `${x}px`;
+                    newBubble.style.top = `${y}px`;
+
+                    const size = Math.random() * 40 + 20; // Size between 20px and 60px (increased)
+                    newBubble.style.width = `${size}px`;
+                    newBubble.style.height = `${size}px`;
+
+                    const startOffsetX = (Math.random() - 0.5) * 50;
+                    const startOffsetY = (Math.random() - 0.5) * 50;
+                    const endOffsetX = (Math.random() - 0.5) * 250; // Increased spread
+                    const endOffsetY = (Math.random() - 0.5) * 250;
+
+                    newBubble.style.setProperty('--start-x', `${startOffsetX}px`);
+                    newBubble.style.setProperty('--start-y', `${startOffsetY}px`);
+                    newBubble.style.setProperty('--end-x', `${endOffsetX}px`);
+                    newBubble.style.setProperty('--end-y', `${endOffsetY}px`);
+
+                    const animationDuration = Math.random() * 1.5 + 0.8;
+                    newBubble.style.animation = `burst-float ${animationDuration}s ease-out forwards`;
+
+                    newBubble.addEventListener('animationend', () => {
+                        newBubble.remove();
+                    });
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
